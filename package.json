@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "The first take home exam for UAH's CS453",
   "scripts": {
-    "start": "npm --prefix server/ run start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": "npm --prefix server/ run start",
+    "client": "npm --prefix client/ run start"
   },
   "repository": {
     "type": "git",

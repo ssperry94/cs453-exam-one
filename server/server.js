@@ -65,7 +65,7 @@ function validatePatchTask(incomingTask) {
     }
 
     if (!oneRequiredFieldPresent) {
-        return {error: "Must have at least one required field (title, course, completed.)"};
+        return {error: "Must have at least one required field (title, course, completed)."};
     }
 
     return null;
@@ -140,7 +140,7 @@ app.put("/api/tasks/:id", async (req, res) => {
 
     // We did not find the index
     if (taskIndex < 0) {
-        return res.status(404).json(`Task with an id of ${req.params.id} was not found.`);
+        return res.status(404).json({error: `Task with an id of ${req.params.id} was not found.`});
     }
 
     // Preserve the original id
