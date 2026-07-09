@@ -40,6 +40,37 @@ function validateTask(incomingTask) {
     return null;
 }
 
+function validatePatchTask(incomingTask) {
+    let oneRequiredFieldPresent = false;
+
+    if (incomingTask.title !== undefined) {
+        oneRequiredFieldPresent = true;
+        if (!(typeof incomingTask.title === "string")) {
+            return {error : "Title must be a string."};
+        }
+    }
+
+    if (incomingTask.course !== undefined) {
+        oneRequiredFieldPresent = true;
+        if (!(typeof incomingTask.course === "string")) {
+            return {error : "Title must be a string."};
+        }
+    }
+
+    if (incomingTask.completed !== undefined) {
+        oneRequiredFieldPresent = true;
+        if (!(typeof incomingTask.completed === "boolean")) {
+            return {error : "Completed must be a boolean."};
+        }
+    }
+
+    if (!oneRequiredFieldPresent) {
+        return {error: "Must have at least one required field (title, course, completed.)"};
+    }
+
+    return null;
+}
+
 let currentID = 2;
 const tasks = [
     {
@@ -125,7 +156,31 @@ app.put("/api/tasks/:id", async (req, res) => {
 });
 
 app.patch("/api/tasks/:id", async (req, res) => {
+    const error = validatePatchTask(req.body);
 
+    if (error) {
+        return res.status(400).json(error);
+    }
+
+    const task = tasks.find(task => task.id === Number(req.params.id));
+
+    if (task === undefined) {
+        return res.status(404).json({error : `Task with the id ${req.params.id} was not found.`});
+    }
+
+    if (req.body.title !== undefined) {
+        task.title = req.body.title;
+    }
+
+    if (req.body.course !== undefined) {
+        task.course = req.body.course;
+    }
+
+    if (req.body.completed !== undefined) {
+        task.completed = req.body.completed;
+    }
+
+    return res.status(200).json(task);
 });
 
 app.delete("/api/tasks/:id", async (req, res) => {
