@@ -3,7 +3,8 @@ import { exit, stdin, stdout } from "node:process";
 
 const HOSTNAME = "localhost";
 const PORT = 3000;
-const URL_BASE = `http://${HOSTNAME}:${PORT}/` 
+const URL_BASE = `http://${HOSTNAME}:${PORT}/`
+
 // Create the interface
 const readline = createInterface({
     input: stdin,
@@ -52,7 +53,7 @@ async function getUserMadeTask(enforceComplete = true) {
     return {
         title: title,
         course: course,
-        completed: isCompleted.toUpperCase() === "Y" ? true : false
+        completed: isCompleted.toUpperCase() === "Y"
     };
 
 }
@@ -198,7 +199,7 @@ async function updateTask() {
             return;
         }
 
-        body.completed = updatedComplete.toUpperCase() === "Y" ? true : false;
+        body.completed = updatedComplete.toUpperCase() === "Y";
     }
 
     const response = await sendRequestWithBody(ENDPOINTS.task + `/${id.trim()}`, "PATCH", body);

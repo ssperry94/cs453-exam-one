@@ -3,73 +3,7 @@
  */
 
 import express from 'express';
-// Helpers
-function validateTask(incomingTask) {
-    const title = incomingTask?.title;
-    const course = incomingTask?.course;
-    const completed = incomingTask?.completed;
-
-    // Verify all required attributes are present
-    if (title == null) {
-        return {error: "title is required"};
-    }
-
-    if (course == null) {
-        return {error: "course is required."};
-    }
-
-    if (completed == null) {
-        return {error: "completed flag required."};
-    }
-
-    // Verify attributes type
-
-    if (typeof title !== "string") {
-        return {error: "Title must be type string."};
-    }
-
-    if (typeof course !== "string") {
-        return {error: "Course must be a string."};
-    }
-
-    if (typeof completed !== "boolean") {
-        return {error: "Completed must be boolean."};
-    }
-
-    // we didn't find any errors
-    return null;
-}
-
-function validatePatchTask(incomingTask) {
-    let oneRequiredFieldPresent = false;
-
-    if (incomingTask.title !== undefined) {
-        oneRequiredFieldPresent = true;
-        if (!(typeof incomingTask.title === "string")) {
-            return {error : "Title must be a string."};
-        }
-    }
-
-    if (incomingTask.course !== undefined) {
-        oneRequiredFieldPresent = true;
-        if (!(typeof incomingTask.course === "string")) {
-            return {error : "Title must be a string."};
-        }
-    }
-
-    if (incomingTask.completed !== undefined) {
-        oneRequiredFieldPresent = true;
-        if (!(typeof incomingTask.completed === "boolean")) {
-            return {error : "Completed must be a boolean."};
-        }
-    }
-
-    if (!oneRequiredFieldPresent) {
-        return {error: "Must have at least one required field (title, course, completed)."};
-    }
-
-    return null;
-}
+import { logger, validateTask, validatePatchTask } from './middleware/middleware.js';
 
 let currentID = 2;
 const tasks = [
@@ -91,6 +25,7 @@ const PORT = 3000;
 
 const app = express();
 app.use(express.json());
+app.use(logger);
 
 app.get("/health", async (req, res) => {
     return res.status(200).json({status: "OK"});
@@ -110,13 +45,7 @@ app.get("/api/tasks/:id", async (req, res) => {
     return res.status(200).json(task);
 });
 
-app.post("/api/tasks", async (req, res) => {
-    const error = validateTask(req.body);
-
-    if (error) {
-        return res.status(400).json(error);
-    }
-
+app.post("/api/tasks", validateTask, async (req, res) => {
     const newTask = {
         id: ++currentID,
         title: req.body.title,
@@ -128,13 +57,7 @@ app.post("/api/tasks", async (req, res) => {
     return res.status(201).json(newTask);
 });
 
-app.put("/api/tasks/:id", async (req, res) => {
-    const error = validateTask(req.body);
-
-    if (error) {
-        return res.status(400).json(error);
-    }
-
+app.put("/api/tasks/:id", validateTask, async (req, res) => {
     // Find the item and replace it
     const taskIndex = tasks.findIndex(task => task.id === Number(req.params.id));
 
@@ -155,13 +78,7 @@ app.put("/api/tasks/:id", async (req, res) => {
     return res.status(200).json(tasks[taskIndex]);
 });
 
-app.patch("/api/tasks/:id", async (req, res) => {
-    const error = validatePatchTask(req.body);
-
-    if (error) {
-        return res.status(400).json(error);
-    }
-
+app.patch("/api/tasks/:id", validatePatchTask, async (req, res) => {
     const task = tasks.find(task => task.id === Number(req.params.id));
 
     if (task === undefined) {
