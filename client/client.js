@@ -1,6 +1,7 @@
 import { createInterface } from "node:readline/promises";
 import { exit, stdin, stdout } from "node:process";
 
+// Constants
 const HOSTNAME = "localhost";
 const PORT = 3000;
 const URL_BASE = `http://${HOSTNAME}:${PORT}/`
@@ -11,11 +12,14 @@ const readline = createInterface({
     output: stdout
 });
 
+// Constants for the urls
 const ENDPOINTS = {
     health: URL_BASE + "health",
     task: URL_BASE + "api/tasks",
 };
+// ===================================== Helpers =====================================
 
+// Sends a request with a JSON body
 async function sendRequestWithBody(url, method, data) {
     try {
         const response = await fetch(url, {
@@ -39,7 +43,8 @@ async function sendRequestWithBody(url, method, data) {
     }
 }
 
-async function getUserMadeTask(enforceComplete = true) {
+// Gets user input for a complete task
+async function getUserMadeTask() {
     // Get all required task fields
     const title = await readline.question("Please enter the title of your task: ");
     const course = await readline.question("Please enter the course for your task: ");
@@ -57,7 +62,8 @@ async function getUserMadeTask(enforceComplete = true) {
     };
 
 }
-// URL's to the server's endpoints
+
+// Gets the server stats
 async function sendHealthCheck() {
     try {
         const response = await fetch(ENDPOINTS.health);
@@ -75,6 +81,7 @@ async function sendHealthCheck() {
     }
 }
 
+// Gets all tasks from the server
 async function getAllTasks() {
     try {
         const response = await fetch(ENDPOINTS.task);
@@ -91,6 +98,7 @@ async function getAllTasks() {
     }
 }
 
+// Gets a specific task by ID
 async function getTask() {
     // Get the id from the user
     const id = await readline.question("Please enter the task id: ");
@@ -117,6 +125,7 @@ async function getTask() {
     }
 }
 
+// Creates a new task
 async function createTask() {
     const newTask = await getUserMadeTask();
 
@@ -139,6 +148,7 @@ async function createTask() {
     return;
 }
 
+// Replaces an existing task
 async function replaceTask() {
     // Get the id from the user
     const id = await readline.question("Please enter the task id: ");
@@ -168,6 +178,7 @@ async function replaceTask() {
     console.log(`Task updated: ${JSON.stringify(response.body)}`);
 }
 
+// Updates a field of an existing task
 async function updateTask() {
     // Get the id from the user
     const id = await readline.question("Please enter the task id: ");
@@ -216,6 +227,7 @@ async function updateTask() {
     console.log(`Task successfully updated: ${JSON.stringify(response.body)}`);
 }
 
+// Deletes an existing task
 async function deleteTask() {
     // Get the id from the user
     const id = await readline.question("Please enter the task id: ");
@@ -247,6 +259,7 @@ async function deleteTask() {
     }
 }
 
+// Main function
 async function main() {
     let exitClient = false;
 

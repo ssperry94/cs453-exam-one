@@ -21,12 +21,15 @@ const tasks = [
     },
 ];
 
+// Hardcoded port constant
 const PORT = 3000;
 
+// Declare the express app and add the application wide logger middleware
 const app = express();
 app.use(express.json());
 app.use(logger);
 
+// Define the routes
 app.get("/health", async (req, res) => {
     return res.status(200).json({status: "OK"});
 });
@@ -114,6 +117,7 @@ app.delete("/api/tasks/:id", async (req, res) => {
     return res.sendStatus(204);
 });
 
+// Gracefully fail if unknown route was provided
 app.use((req, res) => {
     return res.status(404).json({error: "Resource not found."});
 });

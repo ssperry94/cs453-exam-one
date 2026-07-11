@@ -2,6 +2,7 @@
  * Holds the implementation of the logger and verification modules
  */
 
+// Logs the request method, path, response status code, and total elapsed time
 export function logger(req, res, next) {
     const startTime = Date.now();
 
@@ -17,6 +18,7 @@ export function logger(req, res, next) {
     next();
 }
 
+// Validates an incoming task object from the request body. Enforces all fields are required and correct
 export function validateTask(req, res, next) {
     const title = req.body?.title;
     const course = req.body?.course;
@@ -52,6 +54,8 @@ export function validateTask(req, res, next) {
     // we didn't find any errors
     next();
 }
+
+// Validates that at least field is correct and present in the task object from the request
 export function validatePatchTask(req, res, next) {
     let oneRequiredFieldPresent = false;
 
