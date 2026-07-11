@@ -43,8 +43,11 @@
     }
     ```
 
-## Parts 4-6
-- See `README.md` for details
+## Part 4
+The tasks of logging and validating incoming objects are middleware concerns because we must call these for multiple routes. In the case of logging, this is called with every request and response the server processes. Since validation and logging are used so often, it is better to define them once in their own source file and reuse them in each route, rather than redefine them again in each route. This keeps our codebase modular and clean.
+
+# Parts 5-6
+Implemented in `client/client.js` and `server/openapi.yaml`
 
 ## Part 7
 1) The difference between the express router implementation and the OpenAPI specification is that the router is the in-code implementation of an API and the OpenAPI specification is a file documenting the structure of the API. In an express router, we are directly implementing the fields and functionality of the API while in the OpenAPI schema, we are providing documentation detailing the required fields, version, schema, and more.
