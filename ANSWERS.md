@@ -42,6 +42,8 @@
         "completed": false
     }
     ```
+## Part 3
+Implemented in `server/server.js`
 
 ## Part 4
 The tasks of logging and validating incoming objects are middleware concerns because we must call these for multiple routes. In the case of logging, this is called with every request and response the server processes. Since validation and logging are used so often, it is better to define them once in their own source file and reuse them in each route, rather than redefine them again in each route. This keeps our codebase modular and clean.
